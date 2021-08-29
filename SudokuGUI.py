@@ -1,31 +1,35 @@
 import Tkinter as tk
 
-# Set number of rows and columns
-ROWS = 5
-COLS = 5
+# --- functions ---
 
-# Create a grid of None to store the references to the tiles
-tiles = [[None for _ in range(COLS)] for _ in range(ROWS)]
+def grid_layout(mW, grid_dim):
+    entries = []
 
-def callback(event):
-    # Get rectangle diameters
-    col_width = c.winfo_width()/COLS
-    row_height = c.winfo_height()/ROWS
-    # Calculate column and row number
-    col = event.x//col_width
-    row = event.y//row_height
-    # If the tile is not filled, create a rectangle
-    if not tiles[row][col]:
-        tiles[row][col] = c.create_rectangle(col*col_width, row*row_height, (col+1)*col_width, (row+1)*row_height, fill="black")
-    # If the tile is filled, delete the rectangle and clear the reference
-    else:
-        c.delete(tiles[row][col])
-        tiles[row][col] = None
+    for row in range(grid_dim):
+        for col in range(grid_dim):
 
-# Create the window, a canvas and the mouse click event binding
-root = tk.Tk()
-c = tk.Canvas(root, width=500, height=500, borderwidth=5, background='white')
-c.pack()
-c.bind("<Button-1>", callback)
+            entry = tk.Entry(mW, width=3, highlightthickness=1, highlightbackground='#000000')
 
-root.mainloop()
+            pad_y = (0, 0)
+            pad_x = (0, 0)
+
+            if (row+1) % 3 == 0 and (row+1) < grid_dim: # skip for last row
+                pad_y = (0, 10)
+
+            if (col+1) % 3 == 0 and (col+1) < grid_dim: # skip for last column
+                pad_x = (0, 10)
+
+            entry.grid(row=row, column=col, ipadx=5, ipady=5, padx=pad_x, pady=pad_y)
+
+            entries.append(entry)
+
+    return entries
+
+# --- main ---
+
+mW = tk.Tk()
+mW.title('Sudoku')
+
+entries = grid_layout(mW, 9)  # send result
+
+mW.mainloop()
